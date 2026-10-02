@@ -1,0 +1,47 @@
+'use client';
+import {ZoomImage} from './zoom-image';
+import {imageDimensions} from '../lib/image-dimensions';
+import {Reveal} from './site';
+import {choose,useLanguage} from '../lib/i18n';
+
+export const media={
+  weddingMenu:{name:'wedding-menu',ru:'СВАДЕБНОЕ МЕНЮ / МОКАП',en:'WEDDING MENU / MOCKUP',w:1536,h:1024},
+  weddingGuest:{name:'wedding-guest-card',ru:'ИМЕННАЯ КАРТОЧКА ГОСТЯ / МОКАП',en:'GUEST PLACE CARD / MOCKUP',w:1536,h:1024},
+  weddingInside:{name:'wedding-invitation-inside',ru:'ПРИГЛАШЕНИЕ / ВНУТРЕННИЙ РАЗВОРОТ',en:'INVITATION / INSIDE SPREAD',w:1800,h:1350},
+  weddingOutside:{name:'wedding-invitation-outside',ru:'ПРИГЛАШЕНИЕ / ВНЕШНИЙ РАЗВОРОТ',en:'INVITATION / OUTSIDE SPREAD',w:1800,h:1350},
+  workbook:{name:'print-barber-workbook',ru:'АКАДЕМИЯ БАРБЕРОВ / РАБОЧИЕ ТЕТРАДИ',en:'BARBER ACADEMY / WORKBOOKS',w:1600,h:900},
+  notebooks:{name:'print-health-notebooks',ru:'FIZ PROPAGANDA / БЛОКНОТЫ',en:'FIZ PROPAGANDA / NOTEBOOKS',w:900,h:1600},
+  okko:{name:'print-okko-posters',ru:'OKKO / ПЛАКАТЫ',en:'OKKO / POSTERS',w:900,h:1600},
+  staryk:{name:'print-staryk-menu',ru:'СТАРИК-ХИНКАЛЫЧ / МЕНЮ СЕТИ',en:'STARYK KHINKALYCH / RESTAURANT MENUS',w:1200,h:1600},
+  tokio:{name:'print-mama-tokio-menu',ru:'МАМА ТОКИО / СОЗДАНИЕ И РЕДАКТИРОВАНИЕ МЕНЮ',en:'MAMA TOKIO / MENU DESIGN & EDITING',w:1200,h:1600},
+  brochures:{name:'print-nevskaya-brochures',ru:'НЕВСКАЯ УСАДЬБА / БУКЛЕТЫ',en:'NEVSKAYA USADBA / BROCHURES',w:1600,h:1200},
+  ballet:{name:'print-ice-ballet-posters',ru:'БАЛЕТ НА ЛЬДУ / ПЛАКАТЫ',en:'ICE BALLET / POSTERS',w:1200,h:1600},
+  invitation:{name:'print-invitation',ru:'ПРИГЛАСИТЕЛЬНЫЙ / PRE-PARTY',en:'INVITATION / PRE-PARTY',w:992,h:1586},
+  wedding:{name:'print-wedding',ru:'СВАДЕБНАЯ АЙДЕНТИКА / КЕЙС',en:'WEDDING IDENTITY / CASE',w:1024,h:1260},
+  diploma:{name:'velosop-diploma',ru:'ВЕЛОСОП / ДИПЛОМ УЧАСТНИКА · 2025',en:'VELOSOP / PARTICIPANT DIPLOMA · 2025',w:2048,h:1455},
+  rollup:{name:'velosop-rollup',ru:'ВЕЛОСОП / МАКЕТ РОЛЛАПА · 2025',en:'VELOSOP / ROLL-UP ARTWORK · 2025',w:453,h:1066},
+  bottle:{name:'velosop-bottle',ru:'ВЕЛОСОП / СПОРТИВНАЯ БУТЫЛКА',en:'VELOSOP / SPORTS BOTTLE',w:1364,h:2048},
+  calendar:{name:'print-kontrofors-calendar',ru:'КОНТРФОРС / КАЛЕНДАРЬ · МОКАП',en:'KONTROFORS / CALENDAR · MOCKUP',w:2048,h:1433},
+  cards:{name:'print-kontrofors-cards',ru:'КОНТРФОРС / ДЕЛОВЫЕ КАРТОЧКИ · МОКАП',en:'KONTROFORS / BUSINESS CARDS · MOCKUP',w:2048,h:1365},
+  business:{name:'print-business-card',ru:'ВИЗИТКА / МОКАП',en:'BUSINESS CARD / MOCKUP',w:2048,h:1365},
+  door:{name:'print-door-sticker',ru:'НАКЛЕЙКА НА ДВЕРЬ / АКАДЕМИЯ БАРБЕРОВ',en:'DOOR DECAL / BARBER ACADEMY',w:1200,h:803}
+};
+export type MediaKey=keyof typeof media;
+export function PrintImage({item,className='',sizes='(max-width: 650px) calc(100vw - 40px), 46vw'}:{item:MediaKey;className?:string;sizes?:string}){const {language}=useLanguage();const m=media[item];const src='/images/'+m.name+'.webp';const small='/images/'+m.name+'-small.webp';const fullSize=imageDimensions[src]??[m.w,m.h];const smallSize=imageDimensions[small];return <img className={className} src={src} srcSet={smallSize?small+' '+smallSize[0]+'w, '+src+' '+fullSize[0]+'w':undefined} sizes={smallSize?sizes:undefined} width={fullSize[0]} height={fullSize[1]} alt={choose(language,m.ru,m.en)} loading="lazy" decoding="async"/>}
+export function PrintMedia({item}:{item:MediaKey}){const {language}=useLanguage();const m=media[item];return <figure className={'print-media print-media-'+item}><a className="asset-zoom" href={'/images/'+m.name+'.webp'} target="_blank" rel="noreferrer" aria-label={choose(language,m.ru,m.en)}><PrintImage item={item}/></a><figcaption>{choose(language,m.ru,m.en)}</figcaption></figure>}
+export function VelosopApplications(){return <div className="velosop-applications"><PrintMedia item="diploma"/><PrintMedia item="rollup"/><PrintMedia item="bottle"/></div>}
+export function PrintProductionStory(){const {language}=useLanguage();return <div className="case-story wrap print-production-story">
+  <Reveal className="story-text"><span className="eyebrow">01 / {choose(language,'ПЕЧАТНЫЕ НОСИТЕЛИ','PRINTED MATTER')}</span><p>{choose(language,'Дизайн и работа с печатными материалами для событий, брендов и пространств. Пригласительные и дипломы, календари и карточки, мерч и оформление — разные форматы, в которых графика становится частью предмета.','Design and work with printed materials for events, brands and spaces. Invitations, diplomas, calendars, cards, merchandise and signage show how graphics become part of a physical object.')}</p></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">02 / {choose(language,'СОБЫТИЯ И СВАДЬБА','EVENTS & WEDDING')}</span><h2>{language==='ru'?<>ОТ ПРИГЛАШЕНИЯ<br/>ДО ДЕТАЛЕЙ.</>:<>FROM INVITATIONS<br/>TO THE DETAILS.</>}</h2><div className="print-media-pair print-event-pair"><PrintMedia item="invitation"/><PrintMedia item="wedding"/></div><p>{choose(language,'Пригласительный задаёт настроение события. Свадебный кейс показывает общую систему: онлайн-приглашение, печатные материалы, именные карточки и меню.','The invitation sets the mood for an event. The wedding case shows a shared system across the digital invitation, printed materials, place cards and menu.')}</p></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">03 / VELOSOP</span><h2>{language==='ru'?<>СИСТЕМА<br/>НА НОСИТЕЛЯХ.</>:<>A SYSTEM<br/>ACROSS APPLICATIONS.</>}</h2><VelosopApplications/></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">04 / {choose(language,'КОНТРФОРС','KONTROFORS')}</span><h2>{language==='ru'?<>КАЛЕНДАРИ.<br/>КАРТОЧКИ.</>:<>CALENDARS.<br/>CARDS.</>}</h2><div className="print-media-pair"><PrintMedia item="calendar"/><PrintMedia item="cards"/></div></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">05 / {choose(language,'ДЕЛОВЫЕ МАТЕРИАЛЫ И ОФОРМЛЕНИЕ','BUSINESS MATERIALS & SIGNAGE')}</span><h2>{language==='ru'?<>В РУКАХ.<br/>В ПРОСТРАНСТВЕ.</>:<>IN YOUR HANDS.<br/>IN A SPACE.</>}</h2><div className="print-media-pair"><PrintMedia item="business"/><PrintMedia item="door"/></div></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">06 / {choose(language,'ТЕТРАДИ И БЛОКНОТЫ','WORKBOOKS & NOTEBOOKS')}</span><h2>{language==='ru'?<>ДЛЯ УЧЁБЫ.<br/>ДЛЯ ЗАПИСЕЙ.</>:<>FOR LEARNING.<br/>FOR NOTES.</>}</h2><div className="print-media-pair"><PrintMedia item="workbook"/><PrintMedia item="notebooks"/></div><p>{choose(language,'Рабочие тетради для сети академий барберов и блокноты для компании в сфере заботы о здоровье. Фотографии готовых печатных материалов.','Workbooks for a network of barber academies and notebooks for a health care company. Photographs of the finished printed materials.')}</p></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">07 / {choose(language,'РЕСТОРАННЫЕ СЕТИ','RESTAURANT NETWORKS')}</span><h2>{language==='ru'?<>МЕНЮ.<br/>В ДЕТАЛЯХ.</>:<>MENUS.<br/>IN DETAIL.</>}</h2><div className="print-media-pair"><PrintMedia item="staryk"/><PrintMedia item="tokio"/></div><p>{choose(language,'Работа с печатными материалами сети «Старик-Хинкалыч». Создание и редактирование меню сети «Мама Токио».','Work with printed materials for the Staryk Khinkalych restaurant network. Menu design and editing for the Mama Tokio network.')}</p></Reveal>
+  <Reveal className="story-section"><span className="eyebrow">08 / {choose(language,'ПЛАКАТЫ И БУКЛЕТЫ','POSTERS & BROCHURES')}</span><h2>{language==='ru'?<>ОТ АФИШИ<br/>ДО БУКЛЕТА.</>:<>FROM POSTERS<br/>TO BROCHURES.</>}</h2><div className="print-client-grid"><PrintMedia item="okko"/><PrintMedia item="ballet"/><PrintMedia item="brochures"/></div><p>{choose(language,'Плакаты OKKO и «Балет на льду», буклеты для «Невской усадьбы» — фотографии материалов в производстве и готовых тиражей.','OKKO and Ice Ballet posters, and brochures for Nevskaya Usadba — photographs of materials in production and finished print runs.')}</p></Reveal>
+</div>}
+
+export function PrintComposition(){const {language}=useLanguage();return <div className="print-composition"><div className="print-composition-workbook"><PrintImage item="workbook"/></div><div className="print-composition-notebooks"><PrintImage item="notebooks"/></div><div className="print-composition-calendar"><PrintImage item="calendar"/></div><div className="print-composition-invitation"><PrintImage item="invitation"/></div><span className="print-composition-label">{choose(language,'ТЕТРАДИ / БЛОКНОТЫ / КАЛЕНДАРИ / ПРИГЛАШЕНИЯ','WORKBOOKS / NOTEBOOKS / CALENDARS / INVITATIONS')}</span></div>}
+
+export function PrintCollectionStory({items}:{items:MediaKey[]}){const {language}=useLanguage();return <div className="case-story wrap print-collection-story"><Reveal className="story-section" id="materials"><span className="eyebrow">01 / {choose(language,'МАТЕРИАЛЫ ПРОЕКТА','PROJECT MATERIALS')}</span><h2>{choose(language,'ДИЗАЙН НА НОСИТЕЛЯХ.','DESIGN IN USE.')}</h2><div className={'print-collection-grid '+(items.length===1?'single':'')}>{items.map(item=><PrintMedia key={item} item={item}/>)}</div><p>{choose(language,'Нажмите на изображение, чтобы рассмотреть материал крупнее.','Select an image to view the material at full size.')}</p></Reveal><LinkToPrint/></div>}
+function LinkToPrint(){const {language}=useLanguage();return <a className="text-link" href="/work/print-production">{choose(language,'ВСЯ ПОДБОРКА ПЕЧАТИ →','ALL PRINT WORK →')}</a>}
